@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>그린팟 – 집에서 키우는 신선한 채소</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-deep:  #1a6b3a;
+      --green-mid:   #2d9b57;
+      --green-light: #4ecb74;
+      --green-pale:  #e8f8ee;
+      --led-purple:  #7c4dff;
+      --led-blue:    #448aff;
+      --text-dark:   #1a2e1f;
+      --text-mid:    #4a5e4f;
+      --text-light:  #8aa390;
+      --white:       #ffffff;
+      --off-white:   #f7fdf9;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+      color: var(--text-dark);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 56px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      transition: background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(255,255,255,0.95);
+      border-bottom-color: rgba(46,155,87,0.15);
+    }
+    nav.scrolled .logo { color: var(--green-deep); }
+    nav.scrolled .nav-links a { color: var(--text-mid); }
+    .logo {
+      font-size: 1.5rem; font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px; text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+    }
+    .logo span { color: var(--green-light); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: rgba(255,255,255,0.9);
+      font-size: 0.95rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green-light); }
+    .nav-cta {
+      background: var(--green-mid); color: var(--white);
+      border: none; padding: 11px 26px; border-radius: 50px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(45,155,87,0.4);
+    }
+    .nav-cta:hover { background: var(--green-deep); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex; align-items: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=1920&q=85');
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.05);
+      animation: slowZoom 20s ease-in-out infinite alternate;
+    }
+    @keyframes slowZoom {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.12); }
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        105deg,
+        rgba(10, 35, 18, 0.82) 0%,
+        rgba(10, 35, 18, 0.55) 55%,
+        rgba(10, 35, 18, 0.25) 100%
+      );
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 640px;
+      padding: 160px 56px 100px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; padding: 7px 18px; border-radius: 50px;
+      font-size: 0.82rem; font-weight: 600;
+      backdrop-filter: blur(8px);
+      margin-bottom: 28px;
+    }
+    .hero-badge .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green-light);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      font-weight: 900; line-height: 1.12;
+      letter-spacing: -2px;
+      color: #fff;
+      margin-bottom: 24px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .hero h1 .highlight { color: var(--green-light); }
+    .hero p {
+      font-size: 1.15rem; color: rgba(255,255,255,0.85);
+      margin-bottom: 40px; line-height: 1.85;
+    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--green-mid); color: var(--white);
+      border: none; padding: 18px 40px; border-radius: 50px;
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 8px 28px rgba(45,155,87,0.5);
+    }
+    .btn-primary:hover { background: var(--green-deep); transform: translateY(-2px); box-shadow: 0 14px 36px rgba(45,155,87,0.55); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.15); color: #fff;
+      border: 2px solid rgba(255,255,255,0.5); padding: 16px 36px; border-radius: 50px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+    /* hero side image */
+    .hero-photo-wrap {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: 42%; z-index: 2;
+      overflow: hidden;
+    }
+    .hero-photo-wrap::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 180px;
+      background: linear-gradient(to right, rgba(10,35,18,0.82), transparent);
+      z-index: 2;
+    }
+    .hero-photo {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    /* LED badge on photo */
+    .led-badge {
+      position: absolute; bottom: 80px; left: 40px; z-index: 3;
+      background: rgba(20,20,40,0.85); backdrop-filter: blur(12px);
+      border: 1px solid rgba(124,77,255,0.4);
+      border-radius: 16px; padding: 16px 20px;
+      color: #fff;
+    }
+    .led-bar {
+      width: 140px; height: 10px; border-radius: 6px;
+      background: linear-gradient(90deg, var(--led-purple), var(--led-blue), var(--led-purple));
+      box-shadow: 0 0 18px rgba(124,77,255,0.7);
+      margin-bottom: 10px;
+      animation: ledPulse 3s ease-in-out infinite;
+    }
+    @keyframes ledPulse { 0%,100%{opacity:1} 50%{opacity:0.65} }
+    .led-badge-text { font-size: 0.78rem; opacity: 0.75; }
+    .led-badge-title { font-size: 0.92rem; font-weight: 700; }
+
+    /* scroll hint */
+    .scroll-hint {
+      position: absolute; bottom: 36px; left: 56px; z-index: 3;
+      display: flex; align-items: center; gap: 10px;
+      color: rgba(255,255,255,0.55); font-size: 0.82rem;
+    }
+    .scroll-arrow { animation: bounce 1.8s ease-in-out infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+    /* ── STATS ── */
+    .stats {
+      position: relative; overflow: hidden;
+      padding: 80px 48px;
+    }
+    .stats-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1920&q=85');
+      background-size: cover; background-position: center;
+      filter: brightness(0.35) saturate(0.6);
+    }
+    .stats-content {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; gap: 80px; flex-wrap: wrap;
+    }
+    .stat { text-align: center; color: var(--white); }
+    .stat-num { font-size: 3rem; font-weight: 900; letter-spacing: -1.5px; color: var(--green-light); }
+    .stat-label { font-size: 0.92rem; opacity: 0.8; margin-top: 6px; }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 100px 56px; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--green-mid); margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 900; letter-spacing: -1px;
+      color: var(--text-dark); margin-bottom: 18px;
+    }
+    .section-sub {
+      font-size: 1.05rem; color: var(--text-mid);
+      max-width: 560px; line-height: 1.8;
+    }
+    .center { text-align: center; margin: 0 auto; }
+
+    /* ── FEATURES ── */
+    .features { background: var(--off-white); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 24px; margin-top: 56px;
+    }
+    .feature-card {
+      background: var(--white);
+      border-radius: 22px; overflow: hidden;
+      border: 1px solid rgba(46,155,87,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(26,107,58,0.12); }
+    .feature-img {
+      width: 100%; height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .feature-body { padding: 28px; }
+    .feature-icon-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .icon-led   { background: linear-gradient(135deg, #ede7ff, #dce9ff); }
+    .icon-water { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); }
+    .icon-app   { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+    .icon-fast  { background: linear-gradient(135deg, #fff8e1, #ffecb3); }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; }
+    .feature-card p  { font-size: 0.9rem; color: var(--text-mid); line-height: 1.75; }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--white); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0; margin-top: 56px;
+    }
+    .step { text-align: center; padding: 16px 20px; position: relative; }
+    .step:not(:last-child)::after {
+      content: '→'; position: absolute; top: 30px; right: -10px;
+      font-size: 1.4rem; color: var(--green-light);
+    }
+    .step-num {
+      width: 62px; height: 62px; border-radius: 50%;
+      background: var(--green-pale); border: 2px solid var(--green-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin: 0 auto 16px;
+    }
+    .step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .step p  { font-size: 0.88rem; color: var(--text-mid); line-height: 1.65; }
+
+    /* ── LIFE GALLERY ── */
+    .life-gallery { background: var(--text-dark); padding: 100px 0; }
+    .life-header { padding: 0 56px 56px; }
+    .life-header .section-label { color: var(--green-light); }
+    .life-header .section-title { color: #fff; }
+    .life-header .section-sub { color: rgba(255,255,255,0.65); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      grid-template-rows: 320px 320px;
+      gap: 4px;
+    }
+    .gallery-item {
+      position: relative; overflow: hidden; cursor: pointer;
+    }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      display: block;
+    }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item.tall { grid-row: 1 / 3; }
+    .gallery-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 28px 20px 20px;
+      background: linear-gradient(to top, rgba(10,35,18,0.85), transparent);
+      color: #fff; font-size: 0.88rem; font-weight: 600;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .gallery-item:hover .gallery-caption { opacity: 1; transform: translateY(0); }
+
+    /* ── PLANTS ── */
+    .plants { background: var(--off-white); }
+    .plants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .plant-card {
+      border-radius: 20px; overflow: hidden;
+      position: relative; height: 240px;
+      cursor: pointer;
+      transition: transform 0.25s;
+    }
+    .plant-card:hover { transform: translateY(-6px); }
+    .plant-card:hover .plant-info { transform: translateY(0); opacity: 1; }
+    .plant-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s;
+    }
+    .plant-card:hover img { transform: scale(1.08); }
+    .plant-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,40,20,0.78) 0%, rgba(10,40,20,0.1) 55%);
+    }
+    .plant-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 16px 16px;
+    }
+    .plant-label h4 { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .plant-label .days {
+      display: inline-block;
+      background: var(--green-light); color: #fff;
+      font-size: 0.75rem; font-weight: 700;
+      padding: 3px 12px; border-radius: 50px;
+    }
+    .plant-info {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50px; padding: 4px 12px;
+      color: #fff; font-size: 0.75rem; font-weight: 600;
+      opacity: 0; transform: translateY(-4px);
+      transition: all 0.25s;
+    }
+
+    /* ── PRICING ── */
+    .pricing { background: var(--white); text-align: center; }
+    .pricing-cards {
+      display: flex; justify-content: center; gap: 28px;
+      flex-wrap: wrap; margin-top: 56px;
+    }
+    .pricing-card {
+      background: var(--off-white);
+      border: 2px solid rgba(46,155,87,0.12);
+      border-radius: 26px; padding: 44px 36px;
+      min-width: 260px; max-width: 300px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: left;
+    }
+    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(26,107,58,0.1); }
+    .pricing-card.popular {
+      background: var(--green-deep); border-color: var(--green-deep);
+      color: var(--white); transform: scale(1.05);
+      box-shadow: 0 24px 56px rgba(26,107,58,0.35);
+    }
+    .pricing-card.popular:hover { transform: scale(1.05) translateY(-4px); }
+    .popular-badge {
+      display: inline-block;
+      background: var(--green-light); color: var(--white);
+      font-size: 0.75rem; font-weight: 700;
+      padding: 4px 14px; border-radius: 50px; margin-bottom: 18px;
+    }
+    .pricing-card h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
+    .price { font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px; margin: 16px 0 4px; }
+    .price-sub { font-size: 0.85rem; opacity: 0.6; margin-bottom: 28px; }
+    .pricing-features { list-style: none; margin-bottom: 32px; }
+    .pricing-features li {
+      padding: 10px 0; font-size: 0.92rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      display: flex; gap: 10px; align-items: center;
+    }
+    .pricing-card.popular .pricing-features li { border-color: rgba(255,255,255,0.12); }
+    .pricing-features li::before { content: '✓'; color: var(--green-light); font-weight: 800; flex-shrink: 0; }
+    .btn-plan {
+      width: 100%; padding: 15px;
+      border-radius: 50px; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .btn-plan-outline {
+      background: transparent; border: 2px solid var(--green-mid); color: var(--green-deep);
+    }
+    .btn-plan-outline:hover { background: var(--green-pale); }
+    .btn-plan-filled { background: var(--green-light); color: var(--white); }
+    .btn-plan-filled:hover { background: #3ab863; }
+
+    /* ── CTA ── */
+    .cta-section {
+      position: relative; overflow: hidden;
+      padding: 140px 56px; text-align: center;
+    }
+    .cta-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1543362906-acfc16c67564?w=1920&q=85');
+      background-size: cover; background-position: center;
+      filter: brightness(0.3) saturate(0.7);
+    }
+    .cta-content { position: relative; z-index: 1; }
+    .cta-section h2 {
+      font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+      font-weight: 900; color: var(--white);
+      letter-spacing: -1.5px; margin-bottom: 22px;
+      line-height: 1.2;
+    }
+    .cta-section p { font-size: 1.12rem; color: rgba(255,255,255,0.72); margin-bottom: 44px; }
+    .cta-btn {
+      background: var(--green-mid); color: var(--white);
+      border: none; padding: 20px 56px; border-radius: 50px;
+      font-size: 1.1rem; font-weight: 800; cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 12px 36px rgba(45,155,87,0.55);
+    }
+    .cta-btn:hover { background: var(--green-deep); transform: translateY(-3px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0c1a10; color: rgba(255,255,255,0.45);
+      padding: 44px 56px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    footer .logo { color: var(--white); font-size: 1.25rem; }
+    footer p { font-size: 0.85rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .hero-content { padding: 120px 24px 80px; }
+      .hero-photo-wrap { display: none; }
+      section { padding: 72px 24px; }
+      .stats-content { gap: 40px; }
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 240px);
+      }
+      .gallery-item.tall { grid-row: auto; }
+      .pricing-card.popular { transform: scale(1); }
+      .cta-section { padding: 100px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 600px) {
+      .gallery-grid { grid-template-columns: 1fr; grid-template-rows: repeat(5, 220px); }
+      .steps { grid-template-columns: 1fr; }
+      .step:not(:last-child)::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo">그린<span>팟</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">특징</a></li>
+    <li><a href="#life">라이프스타일</a></li>
+    <li><a href="#plants">재배 채소</a></li>
+    <li><a href="#pricing">가격</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">지금 시작하기</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      수경재배 · LED 조명 · 완전 자동화
+    </div>
+    <h1>집에서 키우는<br /><span class="highlight">신선한 채소</span>,<br />매일 식탁 위에</h1>
+    <p>상추, 루꼴라, 바질까지 — 흙 없이 깨끗하게.<br />
+    스마트 LED 조명과 수경재배 솔루션으로<br />누구나 쉽게 내 손으로 길러 먹을 수 있어요.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">키트 구매하기</button>
+      <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">작동 방식 보기</button>
+    </div>
+  </div>
+
+  <!-- Right photo panel -->
+  <div class="hero-photo-wrap">
+    <img class="hero-photo"
+      src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=960&q=85"
+      alt="실내 수경재배 키트" />
+    <div class="led-badge">
+      <div class="led-bar"></div>
+      <div class="led-badge-title">풀스펙트럼 LED 조명</div>
+      <div class="led-badge-text">적·청 파장 최적화 · 자동 타이머</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>아래로 스크롤</span>
+    <span class="scroll-arrow">↓</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-bg"></div>
+  <div class="stats-content">
+    <div class="stat">
+      <div class="stat-num">14일</div>
+      <div class="stat-label">첫 수확까지</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3배</div>
+      <div class="stat-label">일반 재배보다 빠른 성장</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">95%</div>
+      <div class="stat-label">물 절약 (토양 재배 대비)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12종</div>
+      <div class="stat-label">재배 가능 채소</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="center">
+    <span class="section-label">핵심 기능</span>
+    <h2 class="section-title">왜 그린팟인가요?</h2>
+    <p class="section-sub">복잡한 원예 지식 없이도 됩니다. 그린팟이 빛, 물, 영양을 모두 관리해 드려요.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <img class="feature-img"
+        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+        alt="LED 식물 조명" />
+      <div class="feature-body">
+        <div class="feature-icon-row">
+          <div class="feature-icon icon-led">💡</div>
+          <h3>풀스펙트럼 LED 조명</h3>
+        </div>
+        <p>식물 성장에 최적화된 적·청 파장 LED. 타이머 자동 제어로 하루 16시간 조사, 별도 관리가 필요 없어요.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <img class="feature-img"
+        src="https://images.unsplash.com/photo-1590682680695-43b964a3ae17?w=800&q=80"
+        alt="수경재배 시스템" />
+      <div class="feature-body">
+        <div class="feature-icon-row">
+          <div class="feature-icon icon-water">💧</div>
+          <h3>순환식 수경재배</h3>
+        </div>
+        <p>흙 없이 영양액만으로 재배. 자동 순환 펌프가 산소와 영양을 뿌리에 지속 공급해 빠른 성장을 돕습니다.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <img class="feature-img"
+        src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80"
+        alt="신선한 샐러드" />
+      <div class="feature-body">
+        <div class="feature-icon-row">
+          <div class="feature-icon icon-app">📱</div>
+          <h3>앱 연동 스마트 관리</h3>
+        </div>
+        <p>스마트폰 앱으로 성장 현황 확인, 조명 스케줄 조정, 영양액 보충 알림까지 한 번에 관리하세요.</p>
+      </div>
+    </div>
+    <div class="feature-card">
+      <img class="feature-img"
+        src="https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=800&q=80"
+        alt="빠르게 자라는 채소" />
+      <div class="feature-body">
+        <div class="feature-icon-row">
+          <div class="feature-icon icon-fast">⚡</div>
+          <h3>3배 빠른 성장 속도</h3>
+        </div>
+        <p>최적화된 환경 덕분에 일반 토양 재배보다 최대 3배 빠르게 자랍니다. 2주면 첫 수확이 가능해요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="center">
+    <span class="section-label">사용 방법</span>
+    <h2 class="section-title">단 4단계로 시작</h2>
+    <p class="section-sub">복잡한 설정 없이 박스를 열고 3분이면 준비 완료.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">🌱</div>
+      <h4>씨앗 포드 삽입</h4>
+      <p>포함된 씨앗 포드를 홈에 꽂기만 하면 됩니다. 별도 씨앗 구매 불필요.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">💧</div>
+      <h4>물 & 영양액 주입</h4>
+      <p>계량된 영양액 1포를 물 탱크에 넣고 표시선까지 물을 채우세요.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">💡</div>
+      <h4>전원 연결</h4>
+      <p>플러그를 꽂으면 LED와 펌프가 자동으로 최적 스케줄로 작동합니다.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">🥗</div>
+      <h4>수확 & 식탁으로</h4>
+      <p>14~21일 후 신선한 채소를 잘라 바로 샐러드로 즐기세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LIFE GALLERY -->
+<section class="life-gallery" id="life">
+  <div class="life-header">
+    <span class="section-label">집에서 키워 먹는 일상</span>
+    <h2 class="section-title">수확부터 식탁까지,<br />매일의 즐거움</h2>
+    <p class="section-sub">직접 키운 채소로 만드는 샐러드의 맛은 다릅니다.</p>
+  </div>
+  <div class="gallery-grid">
+    <!-- tall left image -->
+    <div class="gallery-item tall">
+      <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=900&q=85"
+           alt="집에서 신선한 채소 수확" />
+      <div class="gallery-caption">🌿 직접 키운 채소로 만드는 아침 샐러드</div>
+    </div>
+    <!-- top right 1 -->
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1543362906-acfc16c67564?w=700&q=85"
+           alt="신선한 채소 식탁" />
+      <div class="gallery-caption">🥗 온 가족이 함께하는 건강한 식사</div>
+    </div>
+    <!-- top right 2 -->
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=700&q=85"
+           alt="홈메이드 샐러드" />
+      <div class="gallery-caption">🌱 수확 당일 바로 먹는 신선함</div>
+    </div>
+    <!-- bottom right 1 -->
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=700&q=85"
+           alt="건강한 채소 요리" />
+      <div class="gallery-caption">🍽️ 농약 걱정 없는 깨끗한 채소</div>
+    </div>
+    <!-- bottom right 2 -->
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=700&q=85"
+           alt="실내 텃밭 재배" />
+      <div class="gallery-caption">🏡 거실에서 즐기는 미니 텃밭</div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANTS -->
+<section class="plants" id="plants">
+  <div class="center">
+    <span class="section-label">재배 가능 채소</span>
+    <h2 class="section-title">집에서 키울 수 있는 채소들</h2>
+    <p class="section-sub">씨앗 포드는 별도 구매로 계속 새로운 채소에 도전하세요.</p>
+  </div>
+  <div class="plants-grid">
+    <div class="plant-card">
+      <img src="https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=500&q=80" alt="상추" />
+      <div class="plant-overlay"></div>
+      <div class="plant-info">추천 1위</div>
+      <div class="plant-label">
+        <h4>버터헤드 상추</h4>
+        <span class="days">수확 14일</span>
+      </div>
+    </div>
+    <div class="plant-card">
+      <img src="https://images.unsplash.com/photo-1600326145552-327f74de4ed4?w=500&q=80" alt="바질" />
+      <div class="plant-overlay"></div>
+      <div class="plant-info">향이 진해요</div>
+      <div class="plant-label">
+        <h4>스위트 바질</h4>
+        <span class="days">수확 21일</span>
+      </div>
+    </div>
+    <div class="plant-card">
+      <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=80" alt="루꼴라" />
+      <div class="plant-overlay"></div>
+      <div class="plant-info">샐러드 필수</div>
+      <div class="plant-label">
+        <h4>루꼴라</h4>
+        <span class="days">수확 18일</span>
+      </div>
+    </div>
+    <div class="plant-card">
+      <img src="https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=500&q=80" alt="청경채" />
+      <div class="plant-overlay"></div>
+      <div class="plant-info">볶음 요리 최적</div>
+      <div class="plant-label">
+        <h4>청경채</h4>
+        <span class="days">수확 16일</span>
+      </div>
+    </div>
+    <div class="plant-card">
+      <img src="https://images.unsplash.com/photo-1628944682084-831f35256163?w=500&q=80" alt="페퍼민트" />
+      <div class="plant-overlay"></div>
+      <div class="plant-info">차로 마셔요</div>
+      <div class="plant-label">
+        <h4>페퍼민트</h4>
+        <span class="days">수확 25일</span>
+      </div>
+    </div>
+    <div class="plant-card">
+      <img src="https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=500&q=80" alt="케일" />
+      <div class="plant-overlay"></div>
+      <div class="plant-info">영양 만점</div>
+      <div class="plant-label">
+        <h4>케일</h4>
+        <span class="days">수확 22일</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <span class="section-label">가격 안내</span>
+  <h2 class="section-title">내 라이프스타일에 맞는 플랜</h2>
+  <p class="section-sub center">한 번 구매로 계속 재배하세요. 씨앗 포드만 추가 구독하면 됩니다.</p>
+  <div class="pricing-cards">
+    <div class="pricing-card">
+      <h3>스타터</h3>
+      <div class="price">₩89,000</div>
+      <div class="price-sub">기기 1회 구매</div>
+      <ul class="pricing-features">
+        <li>6포드 수경재배 기기</li>
+        <li>풀스펙트럼 LED 조명</li>
+        <li>시작용 씨앗 포드 1세트</li>
+        <li>영양액 3개월치</li>
+        <li>앱 기본 기능</li>
+      </ul>
+      <button class="btn-plan btn-plan-outline">스타터 구매</button>
+    </div>
+    <div class="pricing-card popular">
+      <div class="popular-badge">가장 인기</div>
+      <h3>패밀리</h3>
+      <div class="price">₩149,000</div>
+      <div class="price-sub">기기 1회 구매</div>
+      <ul class="pricing-features">
+        <li>12포드 대용량 기기</li>
+        <li>듀얼 LED 조명 바</li>
+        <li>씨앗 포드 3세트 (18종)</li>
+        <li>영양액 6개월치</li>
+        <li>앱 프리미엄 + 성장 리포트</li>
+      </ul>
+      <button class="btn-plan btn-plan-filled">패밀리 구매</button>
+    </div>
+    <div class="pricing-card">
+      <h3>씨앗 구독</h3>
+      <div class="price">₩19,900</div>
+      <div class="price-sub">월 정기 배송</div>
+      <ul class="pricing-features">
+        <li>매달 씨앗 포드 6종</li>
+        <li>계절별 추천 채소 큐레이션</li>
+        <li>영양액 1개월치 포함</li>
+        <li>언제든 취소 가능</li>
+        <li>우선 신제품 체험</li>
+      </ul>
+      <button class="btn-plan btn-plan-outline">구독 시작</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-content">
+    <h2>오늘부터 내 채소,<br />직접 키워 드세요</h2>
+    <p>신선하고 안전한 채소를 매일 수확하는 경험,<br />그린팟과 함께 시작하세요.</p>
+    <button class="cta-btn">지금 바로 시작하기 →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">그린<span style="color:var(--green-light)">팟</span></div>
+  <p>© 2025 그린팟. All rights reserved.</p>
+  <p>문의: hello@greenpot.kr</p>
+</footer>
+
+<script>
+  // Nav style on scroll
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  });
+</script>
+
+</body>
+</html>
